@@ -1,2 +1,163 @@
-# BookMark
-its a bookmark page where you can mark your goals what you achieve and mark them as what it is done and what have to be done
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookmarks</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .add-bookmark {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+        
+        input {
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            width: 300px;
+        }
+        
+        button {
+            padding: 12px 25px;
+            background: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        button:hover {
+            background: #f0f0f0;
+        }
+        
+        .bookmarks {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .bookmark-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+        
+        .bookmark-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .bookmark-card a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+            word-break: break-all;
+        }
+        
+        .bookmark-card a:hover {
+            text-decoration: underline;
+        }
+        
+        .delete-btn {
+            background: #ff6b6b;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        .delete-btn:hover {
+            background: #ff5252;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 My Bookmarks</h1>
+        </header>
+        
+        <div class="add-bookmark">
+            <input type="text" id="bookmarkUrl" placeholder="Enter URL">
+            <input type="text" id="bookmarkTitle" placeholder="Enter title">
+            <button onclick="addBookmark()">Add Bookmark</button>
+        </div>
+        
+        <div class="bookmarks" id="bookmarksList"></div>
+    </div>
+    
+    <script>
+        let bookmarks = JSON.parse(localStorage.getItem('bookmarks')) || [];
+        
+        function renderBookmarks() {
+            const list = document.getElementById('bookmarksList');
+            list.innerHTML = '';
+            bookmarks.forEach((bookmark, index) => {
+                const card = document.createElement('div');
+                card.className = 'bookmark-card';
+                card.innerHTML = `
+                    <a href="${bookmark.url}" target="_blank">${bookmark.title}</a>
+                    <button class="delete-btn" onclick="deleteBookmark(${index})">Delete</button>
+                `;
+                list.appendChild(card);
+            });
+        }
+        
+        function addBookmark() {
+            const url = document.getElementById('bookmarkUrl').value;
+            const title = document.getElementById('bookmarkTitle').value;
+            
+            if (url && title) {
+                bookmarks.push({ url, title });
+                localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+                document.getElementById('bookmarkUrl').value = '';
+                document.getElementById('bookmarkTitle').value = '';
+                renderBookmarks();
+            }
+        }
+        
+        function deleteBookmark(index) {
+            bookmarks.splice(index, 1);
+            localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
+            renderBookmarks();
+        }
+        
+        renderBookmarks();
+    </script>
+</body>
+</html>
